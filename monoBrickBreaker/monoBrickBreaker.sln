@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2046
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "monoBrickBreaker", "monoBrickBreaker\monoBrickBreaker.csproj", "{2916D97B-652E-4877-9F59-738226D2C03B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2916D97B-652E-4877-9F59-738226D2C03B}.Debug|x86.ActiveCfg = Debug|x86
+		{2916D97B-652E-4877-9F59-738226D2C03B}.Debug|x86.Build.0 = Debug|x86
+		{2916D97B-652E-4877-9F59-738226D2C03B}.Release|x86.ActiveCfg = Release|x86
+		{2916D97B-652E-4877-9F59-738226D2C03B}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2CD83624-FF4B-4723-B1B3-7FB832D422C3}
+	EndGlobalSection
+EndGlobal
