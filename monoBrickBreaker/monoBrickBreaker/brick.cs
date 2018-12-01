@@ -10,13 +10,47 @@ namespace monoBrickBreaker
 {
     class Brick : Sprite
     {
-        public Rectangle HitBox;
+        
+        public int health = 0;
+        
+        //public Rectangle HitBoxBottom
+        //{
+        //    get
+        //    {
+        //        return new Rectangle((int)position.X, (int)position.Y + (texture.Height / 2) , (int)position.X + texture.Width, (int)position.Y + texture.Height);
+        //    }
+        //}
+        //public Rectangle HitBoxTop
+        //{
+        //    get
+        //    {
+        //        return new Rectangle((int)position.X, (int)position.Y, (int)position.X + texture.Width, (int)position.Y + (texture.Height / 2));
+        //    }
+        //}
+        //public Rectangle HitBoxLeft
+        //{
+        //    get
+        //    {
+        //        return new Rectangle((int)position.X, (int)position.Y, (int)position.X + (texture.Width * (7 / 8)), (int)position.Y + texture.Height);
+        //    }
+        //}
 
-        public Brick(Vector2 vector2, Texture2D texture, Color tint)
+        public Brick(Vector2 vector2, Texture2D texture, Color tint, int health)
         :base(vector2, texture, tint)
         {
-
+            this.health = health;
+            
         }
+        Color color = Color.White;
+        Color[] colors = {Color.Red, Color.Orange, Color.Yellow, Color.Lime, Color.Green, Color.SkyBlue, Color.Blue, Color.Lavender, Color.Purple, Color.Pink, Color.Gray, Color.White, Color.Wheat, Color.RosyBrown, Color.DarkOrange, Color.Goldenrod, Color.Honeydew, Color.LightSkyBlue, Color.Magenta, Color.MediumOrchid };
+        
+        public void Update()
+        {
+            color = colors[health];
+        }
+        
+
+
 
 
 

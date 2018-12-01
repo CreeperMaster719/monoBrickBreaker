@@ -14,7 +14,7 @@ namespace monoBrickBreaker
 
 
         public int xSpeed = 1;
-        public Rectangle HitBox;
+
 
         public Paddle(Vector2 vector2, Texture2D texture, Color color)
             : base(vector2, texture, color)
@@ -38,7 +38,7 @@ namespace monoBrickBreaker
                     position.X += 5;
                 }
             }
-            else if (keyboard.IsKeyDown(keyRight))
+             if (keyboard.IsKeyDown(keyRight))
             {
                 if (position.X + texture.Width < viewport.Width)
                 {
@@ -50,7 +50,7 @@ namespace monoBrickBreaker
                     position.X -= 5;
                 }
             }
-            else if(keyboard.IsKeyDown(cheatKey))
+             if(keyboard.IsKeyDown(cheatKey))
             {
                 position.X = ballPos.X;
             }

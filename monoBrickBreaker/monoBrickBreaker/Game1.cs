@@ -12,6 +12,7 @@ namespace monoBrickBreaker
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Paddle trampoline;
+        Ball brickball;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -32,9 +33,13 @@ namespace monoBrickBreaker
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Texture2D paddleTexture = Content.Load<Texture2D>("rectangle");
-            Vector2 paddlePos = new Vector2(500, 500);
+            Vector2 paddlePos = new Vector2(500, 700);
             Color paddleTint = Color.White;
             trampoline = new Paddle(paddlePos, paddleTexture, paddleTint);
+            Texture2D ballTexture = Content.Load<Texture2D>("brickball");
+            Vector2 ballPos = new Vector2(50, 50);
+            Color ballTint = Color.White;
+            brickball = new Ball(ballPos, ballTexture, ballTint);
         }
 
 
@@ -52,6 +57,7 @@ namespace monoBrickBreaker
 
             // TODO: Add your update logic here
             trampoline.Update(Keys.S, Keys.F, GraphicsDevice.Viewport, Keys.I, new Vector2(0, 0));
+            brickball.Update(GraphicsDevice.Viewport);
             base.Update(gameTime);
         }
 
@@ -60,6 +66,7 @@ namespace monoBrickBreaker
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
             trampoline.Draw(spriteBatch);
+            brickball.Draw(spriteBatch);
             spriteBatch.End();
             // TODO: Add your drawing code here
             

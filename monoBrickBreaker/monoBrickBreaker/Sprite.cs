@@ -22,6 +22,14 @@ namespace monoBrickBreaker
 
 
         }
+        public Rectangle HitBox
+        {
+            get
+            {
+                return new Rectangle((int)position.X, (int)position.Y, (int)position.X + texture.Width, (int)position.Y + texture.Height);
+            }
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, position, tint);
