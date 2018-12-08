@@ -31,29 +31,31 @@ namespace monoBrickBreaker
             {
                 if (position.X > 0)
                 {
-                    position.X -= 5;
+                    position.X -= 8;
                 }
                 else
                 {
-                    position.X += 5;
+                    position.X += 8;
                 }
             }
              if (keyboard.IsKeyDown(keyRight))
             {
                 if (position.X + texture.Width < viewport.Width)
                 {
-                    position.X += 5;
+                    position.X += 8;
                 }
 
                 else
                 {
-                    position.X -= 5;
+                    position.X -= 8;
                 }
             }
              if(keyboard.IsKeyDown(cheatKey))
             {
                 position.X = ballPos.X;
             }
+
+
         }
 
 

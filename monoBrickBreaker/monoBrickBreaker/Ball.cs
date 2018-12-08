@@ -15,29 +15,54 @@ namespace monoBrickBreaker
         {
 
         }
-        public int xSpeed = 1;
-        public int ySpeed = 1;
+        public int xSpeed = 5;
+        public int ySpeed = 5;
         
-        public void Update(Viewport viewport)
+        
+        public void Update(Viewport viewport, Rectangle HitBoxPaddle, List<Brick> bricks, int numberOfBricks )
         {
             if(position.X < 0)
             {
-                xSpeed = 1;
+                xSpeed *= -1;
             }
             if (position.Y < 0)
             {
-                ySpeed = 1;
+                ySpeed *= -1;
             }
             if(position.X + texture.Width > viewport.Width)
             {
-                xSpeed = -1;
+                xSpeed *= -1;
             }
             if(position.Y + texture.Height > viewport.Height)
             {
-                ySpeed = -1;
+                ySpeed *= -1;
             }
-            position.X += (5 * xSpeed);
-            position.Y += (5 * ySpeed);
+            if(HitBox.Intersects(HitBoxPaddle))
+            {
+                ySpeed *= -1;
+            }
+            position.X += xSpeed;
+            position.Y += ySpeed;
+            foreach (Brick brick in bricks)
+            {
+
+                if(HitBox.Intersects(brick.HitBoxBottom))
+                {
+
+                }
+                if (HitBox.Intersects(brick.HitBoxTop))
+                {
+
+                }
+                if (HitBox.Intersects(brick.HitBoxLeft))
+                {
+
+                }
+                if (HitBox.Intersects(brick.HitBoxRight))
+                {
+
+                }
+            }
         }
         
 

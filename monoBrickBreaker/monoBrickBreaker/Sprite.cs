@@ -26,7 +26,7 @@ namespace monoBrickBreaker
         {
             get
             {
-                return new Rectangle((int)position.X, (int)position.Y, (int)position.X + texture.Width, (int)position.Y + texture.Height);
+                return new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
             }
         }
 
