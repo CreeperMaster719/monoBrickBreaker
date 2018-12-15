@@ -12,7 +12,7 @@ namespace monoBrickBreaker
     {
         
         public int health = 0;
-
+        public bool hasCollided = false;
         public Rectangle HitBoxBottom
         {
             get
@@ -50,30 +50,12 @@ namespace monoBrickBreaker
             this.health = health;
             
         }
-        public Color color = Color.White;
-        Color[] colors = {Color.Red, Color.Orange, Color.Yellow, Color.Lime, Color.Green, Color.SkyBlue, Color.Blue, Color.Lavender, Color.Purple, Color.Pink, Color.Gray, Color.White, Color.Wheat, Color.RosyBrown, Color.DarkOrange, Color.Goldenrod, Color.Honeydew, Color.LightSkyBlue, Color.Magenta, Color.MediumOrchid };
+
+        Color[] colors = {Color.Black, Color.Red, Color.Orange, Color.Yellow, Color.Lime, Color.Green, Color.SkyBlue, Color.Blue, Color.Lavender, Color.Purple, Color.Pink, Color.Gray, Color.White, Color.Wheat, Color.RosyBrown, Color.DarkOrange, Color.Goldenrod, Color.Honeydew, Color.LightSkyBlue, Color.Magenta, Color.MediumOrchid };
         
         public void Update()
         {
-            color = colors[health];
-
-
-
+            tint = colors[health];
         }
-
- 
-        
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

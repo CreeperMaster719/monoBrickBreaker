@@ -19,7 +19,7 @@ namespace monoBrickBreaker
         public int ySpeed = 5;
         
         
-        public void Update(Viewport viewport, Rectangle HitBoxPaddle, List<Brick> bricks, int numberOfBricks )
+        public void Update(Viewport viewport, Rectangle HitBoxPaddle, List<Brick> bricks, int numberOfBricks)
         {
             if(position.X < 0)
             {
@@ -41,32 +41,69 @@ namespace monoBrickBreaker
             {
                 ySpeed *= -1;
             }
-            position.X += xSpeed;
-            position.Y += ySpeed;
+
             foreach (Brick brick in bricks)
             {
-
-                if(HitBox.Intersects(brick.HitBoxBottom))
+                if (HitBox.Intersects(brick.HitBoxBottom))
                 {
-
+                    ySpeed *= -1;
+                    brick.health--;
+                    return;
+                    //hasCollided = true;
                 }
                 if (HitBox.Intersects(brick.HitBoxTop))
                 {
-
+                    ySpeed *= -1;
+                    brick.health--;
+                    return;
+                    //hasCollided = true;
                 }
                 if (HitBox.Intersects(brick.HitBoxLeft))
                 {
-
+                    xSpeed *= -1;
+                    brick.health--;
+                    return;
+                    //hasCollided = true;
                 }
                 if (HitBox.Intersects(brick.HitBoxRight))
                 {
-
+                    xSpeed *= -1;
+                    brick.health--;
+                    return;
+                    //hasCollided = true;
                 }
+
+
+            }
+
+            position.X += xSpeed;
+            position.Y += ySpeed;
+        }
+
+
+
+        public void debugTest(Brick bigBrick, int health)
+        {
+            if (HitBox.Intersects(bigBrick.HitBoxBottom))
+            {
+                ySpeed *= -1;
+                bigBrick.health--;
+            }
+            if (HitBox.Intersects(bigBrick.HitBoxTop))
+            {
+                ySpeed *= -1;
+                bigBrick.health--;
+            }
+            if (HitBox.Intersects(bigBrick.HitBoxLeft))
+            {
+                xSpeed *= -1;
+                bigBrick.health--;
+            }
+            if (HitBox.Intersects(bigBrick.HitBoxRight))
+            {
+                xSpeed *= -1;
+                bigBrick.health--;
             }
         }
-        
-
-
-
     }
 }

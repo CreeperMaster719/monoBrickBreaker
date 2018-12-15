@@ -13,9 +13,10 @@ namespace monoBrickBreaker
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Paddle trampoline;
-        Ball brickball;
+        Ball ball;
         SpriteFont font;
         Texture2D pixel;
+        Brick bigBrick;
 
         List<Brick> bricks = new List<Brick>();
        public int numberOfBricks = 10;
@@ -44,9 +45,9 @@ namespace monoBrickBreaker
             Color paddleTint = Color.White;
             trampoline = new Paddle(paddlePos, paddleTexture, paddleTint);
             Texture2D ballTexture = Content.Load<Texture2D>("brickball");
-            Vector2 ballPos = new Vector2(50, 50);
+            Vector2 ballPos = new Vector2(640, 360);
             Color ballTint = Color.White;
-            brickball = new Ball(ballPos, ballTexture, ballTint);
+            ball = new Ball(ballPos, ballTexture, ballTint);
             pixel = new Texture2D(GraphicsDevice, 1, 1);
             pixel.SetData<Color>(new Color[] { Color.White });
             Texture2D brickTexture = Content.Load<Texture2D>("brick");
@@ -56,8 +57,9 @@ namespace monoBrickBreaker
                 
                 Vector2 brickPos = new Vector2((i*128), 50);
                 
-               bricks.Add(new Brick(brickPos, brickTexture, brickTint, 2));
+               bricks.Add(new Brick(brickPos, brickTexture, brickTint, 1));
             }
+             //bigBrick = new Brick(new Vector2(640, 310), brickTexture, brickTint, 2);
 
 
 
@@ -77,13 +79,28 @@ namespace monoBrickBreaker
                 Exit();
 
             // TODO: Add your update logic here
-            trampoline.Update(Keys.S, Keys.F, GraphicsDevice.Viewport, Keys.I, brickball.position);
-            brickball.Update(GraphicsDevice.Viewport, trampoline.HitBox, bricks, numberOfBricks);
-            
+            trampoline.Update(Keys.S, Keys.F, GraphicsDevice.Viewport, Keys.I, ball.position);
+            // bigBrick.Update();
+            // brickball.debugTest(bigBrick, bigBrick.health);
+            Brick toRemove = null;
+
             foreach(Brick brick in bricks)
             {
+
+                if(brick.health == 0)
+                {
+                    toRemove = brick;
+                }
                 brick.Update();
             }
+
+            if (toRemove != null)
+            {
+                bricks.Remove(toRemove);
+            }
+
+            ball.Update(GraphicsDevice.Viewport, trampoline.HitBox, bricks, numberOfBricks);
+
             base.Update(gameTime);
         }
 
@@ -92,22 +109,22 @@ namespace monoBrickBreaker
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
             trampoline.Draw(spriteBatch);
-            brickball.Draw(spriteBatch);
-
+            ball.Draw(spriteBatch);
+          //  bigBrick.Draw(spriteBatch);
             foreach (Brick brick in bricks)
             {
                 brick.Draw(spriteBatch);
                 
-                spriteBatch.Draw(pixel, brick.HitBoxBottom, Color.Orange);
-               spriteBatch.Draw(pixel, brick.HitBoxTop, Color.Yellow);
-                spriteBatch.Draw(pixel, brick.HitBoxLeft, Color.Green);
-                spriteBatch.Draw(pixel, brick.HitBoxRight, Color.Blue);
+               // spriteBatch.Draw(pixel, brick.HitBoxBottom, Color.Orange);
+               //spriteBatch.Draw(pixel, brick.HitBoxTop, Color.Yellow);
+               // spriteBatch.Draw(pixel, brick.HitBoxLeft, Color.Green);
+               // spriteBatch.Draw(pixel, brick.HitBoxRight, Color.Blue);
                //fffspriteBatch.Draw(pixel, brick.HitBox, Color.Black);
-                brick.tint = brick.color;
+                //brick.tint = brick.color;
             }
             spriteBatch.DrawString(font, "Top Of Hitbox", trampoline.position, Color.Black);
             spriteBatch.Draw(pixel, trampoline.HitBox, Color.DarkRed);
-            spriteBatch.Draw(pixel, brickball.HitBox, Color.Black);
+            spriteBatch.Draw(pixel, ball.HitBox, Color.Black);
             spriteBatch.End();
             // TODO: Add your drawing code here
             
