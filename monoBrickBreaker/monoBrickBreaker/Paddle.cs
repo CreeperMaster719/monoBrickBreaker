@@ -52,7 +52,7 @@ namespace monoBrickBreaker
             }
              if(keyboard.IsKeyDown(cheatKey))
             {
-                position.X = ballPos.X;
+                position.X = ballPos.X - texture.Width / 2;
             }
 
 

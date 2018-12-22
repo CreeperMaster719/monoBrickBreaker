@@ -17,9 +17,12 @@ namespace monoBrickBreaker
         SpriteFont font;
         Texture2D pixel;
         Brick bigBrick;
+        int lives = 3;
 
         List<Brick> bricks = new List<Brick>();
-       public int numberOfBricks = 10;
+       public int numberOfBricks = 50;
+        public int numberOfRows = 0;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -32,16 +35,20 @@ namespace monoBrickBreaker
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1280;
             graphics.ApplyChanges();
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+
+            numberOfRows = numberOfBricks / 10;
+
             // Create a new SpriteBatch, which can be used to draw textures.
             font = Content.Load<SpriteFont>("Font");
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Texture2D paddleTexture = Content.Load<Texture2D>("rectangle");
-            Vector2 paddlePos = new Vector2(500, 700);
+            Texture2D paddleTexture = Content.Load<Texture2D>("trampoline");
+            Vector2 paddlePos = new Vector2(500, 650);
             Color paddleTint = Color.White;
             trampoline = new Paddle(paddlePos, paddleTexture, paddleTint);
             Texture2D ballTexture = Content.Load<Texture2D>("brickball");
@@ -52,13 +59,17 @@ namespace monoBrickBreaker
             pixel.SetData<Color>(new Color[] { Color.White });
             Texture2D brickTexture = Content.Load<Texture2D>("brick");
             Color brickTint = Color.White;
-            for (int i = 0; i < numberOfBricks; i++)
+            for (int j = 0; j < numberOfRows; j++)
             {
-                
-                Vector2 brickPos = new Vector2((i*128), 50);
-                
-               bricks.Add(new Brick(brickPos, brickTexture, brickTint, 1));
+                for (int i = 0; i < numberOfBricks; i++)
+                {
+
+                    Vector2 brickPos = new Vector2((i * 128), 50 * j);
+
+                    bricks.Add(new Brick(brickPos, brickTexture, brickTint, numberOfRows - j + 15));
+                }
             }
+
              //bigBrick = new Brick(new Vector2(640, 310), brickTexture, brickTint, 2);
 
 
@@ -79,7 +90,7 @@ namespace monoBrickBreaker
                 Exit();
 
             // TODO: Add your update logic here
-            trampoline.Update(Keys.S, Keys.F, GraphicsDevice.Viewport, Keys.I, ball.position);
+            
             // bigBrick.Update();
             // brickball.debugTest(bigBrick, bigBrick.health);
             Brick toRemove = null;
@@ -98,19 +109,39 @@ namespace monoBrickBreaker
             {
                 bricks.Remove(toRemove);
             }
+            if(lives > 0)
+            {
+                ball.Update(GraphicsDevice.Viewport, trampoline.HitBox, bricks, numberOfBricks);
+                trampoline.Update(Keys.S, Keys.F, GraphicsDevice.Viewport, Keys.I, ball.position);
+            }
 
-            ball.Update(GraphicsDevice.Viewport, trampoline.HitBox, bricks, numberOfBricks);
-
+            if (ball.gameCheck())
+            {
+                lives--;
+                ball.position = new Vector2(640, 360);
+                ball.speed.X= 0;
+                ball.speed.Y = 0;
+                ball.ResetGaneCheck();
+            }
+            
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            GraphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
             trampoline.Draw(spriteBatch);
             ball.Draw(spriteBatch);
-          //  bigBrick.Draw(spriteBatch);
+            
+            if (lives < 1)
+            {
+                spriteBatch.DrawString(font, "You lose", new Vector2(640, 680), Color.Black);
+            }
+            ball.StartGame(Keys.Space);
+            //  bigBrick.Draw(spriteBatch);
+            spriteBatch.DrawString(font, $"{lives} lives left", new Vector2(320, 680), Color.Black);
             foreach (Brick brick in bricks)
             {
                 brick.Draw(spriteBatch);
@@ -123,8 +154,8 @@ namespace monoBrickBreaker
                 //brick.tint = brick.color;
             }
             spriteBatch.DrawString(font, "Top Of Hitbox", trampoline.position, Color.Black);
-            spriteBatch.Draw(pixel, trampoline.HitBox, Color.DarkRed);
-            spriteBatch.Draw(pixel, ball.HitBox, Color.Black);
+            //spriteBatch.Draw(pixel, trampoline.HitBox, Color.DarkRed);
+           // spriteBatch.Draw(pixel, ball.HitBox, Color.Black);
             spriteBatch.End();
             // TODO: Add your drawing code here
             

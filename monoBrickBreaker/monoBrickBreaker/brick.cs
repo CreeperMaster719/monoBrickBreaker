@@ -17,21 +17,21 @@ namespace monoBrickBreaker
         {
             get
             {
-                return new Rectangle((int)position.X, (int)position.Y + (texture.Height / 2), texture.Width, texture.Height / 2);
+                return new Rectangle((int)position.X + (texture.Width * 1 / 8), (int)position.Y + (texture.Height / 2), texture.Width - (texture.Width * 1 / 8), texture.Height / 2);
             }
         }
         public Rectangle HitBoxTop
         {
             get
             {
-                return new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height / 2);
+                return new Rectangle((int)position.X + (texture.Width * 1 / 8), (int)position.Y, texture.Width - (texture.Width * 1 / 8), texture.Height / 2);
             }
         }
         public Rectangle HitBoxLeft
         {
             get
             {
-                return new Rectangle((int)position.X, (int)position.Y, (texture.Width / 8), texture.Height);
+                return new Rectangle((int)position.X , (int)position.Y, (texture.Width / 8), texture.Height);
             }
         }
         public Rectangle HitBoxRight
