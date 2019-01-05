@@ -14,13 +14,14 @@ namespace monoBrickBreaker
         SpriteBatch spriteBatch;
         Paddle trampoline;
         Ball ball;
+        bool youWin = false;
         SpriteFont font;
         Texture2D pixel;
         Brick bigBrick;
         int lives = 3;
 
         List<Brick> bricks = new List<Brick>();
-       public int numberOfBricks = 50;
+       public int numberOfBricks = 10;
         public int numberOfRows = 0;
 
         public Game1()
@@ -48,25 +49,25 @@ namespace monoBrickBreaker
             font = Content.Load<SpriteFont>("Font");
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Texture2D paddleTexture = Content.Load<Texture2D>("trampoline");
-            Vector2 paddlePos = new Vector2(500, 650);
+            Vector2 paddlePos = new Vector2(640, 650);
             Color paddleTint = Color.White;
             trampoline = new Paddle(paddlePos, paddleTexture, paddleTint);
             Texture2D ballTexture = Content.Load<Texture2D>("brickball");
-            Vector2 ballPos = new Vector2(640, 360);
+            Vector2 ballPos = new Vector2(640, 640);
             Color ballTint = Color.White;
             ball = new Ball(ballPos, ballTexture, ballTint);
             pixel = new Texture2D(GraphicsDevice, 1, 1);
             pixel.SetData<Color>(new Color[] { Color.White });
-            Texture2D brickTexture = Content.Load<Texture2D>("brick");
+           Texture2D brickTexture = Content.Load<Texture2D>("brick");
             Color brickTint = Color.White;
             for (int j = 0; j < numberOfRows; j++)
             {
                 for (int i = 0; i < numberOfBricks; i++)
                 {
 
-                    Vector2 brickPos = new Vector2((i * 128), 50 * j);
+                    Vector2 brickPos = new Vector2((i * 128), 30 * j);
 
-                    bricks.Add(new Brick(brickPos, brickTexture, brickTint, numberOfRows - j + 15));
+                    bricks.Add(new Brick(brickPos, brickTexture, brickTint, numberOfRows - j ));
                 }
             }
 
@@ -88,17 +89,20 @@ namespace monoBrickBreaker
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            if(bricks.Count == 0)
+            {
+                youWin = true;
+            }
             // TODO: Add your update logic here
-            
+
             // bigBrick.Update();
             // brickball.debugTest(bigBrick, bigBrick.health);
             Brick toRemove = null;
 
-            foreach(Brick brick in bricks)
+            foreach (Brick brick in bricks)
             {
 
-                if(brick.health == 0)
+                if (brick.health == 0)
                 {
                     toRemove = brick;
                 }
@@ -109,24 +113,32 @@ namespace monoBrickBreaker
             {
                 bricks.Remove(toRemove);
             }
-            if(lives > 0)
+            if (lives >= 0)
             {
-                ball.Update(GraphicsDevice.Viewport, trampoline.HitBox, bricks, numberOfBricks);
+                ball.Update(GraphicsDevice.Viewport, trampoline.HitBox, bricks, numberOfBricks, Keys.Y);
                 trampoline.Update(Keys.S, Keys.F, GraphicsDevice.Viewport, Keys.I, ball.position);
             }
 
             if (ball.gameCheck())
             {
                 lives--;
-                ball.position = new Vector2(640, 360);
-                ball.speed.X= 0;
+                ball.position = new Vector2(610, 360);
+                ball.speed.X = 0;
                 ball.speed.Y = 0;
                 ball.ResetGaneCheck();
             }
+            if (ball.Reset())
+            {
+                lives = 3;
+
+                ball.position = new Vector2(640, 360);
+
+            }
+                base.Update(gameTime);
             
-            base.Update(gameTime);
         }
 
+        
         protected override void Draw(GameTime gameTime)
         {
 
@@ -134,10 +146,14 @@ namespace monoBrickBreaker
             spriteBatch.Begin();
             trampoline.Draw(spriteBatch);
             ball.Draw(spriteBatch);
-            
+            if(youWin)
+            {
+                spriteBatch.DrawString(font, "GG! You Won! Press R to Restart.", new Vector2(640, 240), Color.Black);
+            }
             if (lives < 1)
             {
                 spriteBatch.DrawString(font, "You lose", new Vector2(640, 680), Color.Black);
+                spriteBatch.DrawString(font, "Retry? Press Y. ", new Vector2(640, 630), Color.Black);
             }
             ball.StartGame(Keys.Space);
             //  bigBrick.Draw(spriteBatch);

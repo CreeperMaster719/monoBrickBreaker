@@ -11,18 +11,27 @@ namespace monoBrickBreaker
 {
     class Ball : Sprite
     {
+
         public Vector2 speed;
+        public float baseXSpeed;
         bool gameOver;
-        
+        bool isReset;
         public Ball(Vector2 vector2, Texture2D texture, Color color)
         : base(vector2, texture, color)
         {
             speed = new Vector2(5, 5);
+            baseXSpeed = speed.X;
         }
         
 
-        public void Update(Viewport viewport, Rectangle HitBoxPaddle, List<Brick> bricks, int numberOfBricks)
+        public void Update(Viewport viewport, Rectangle HitBoxPaddle, List<Brick> bricks, int numberOfBricks, Keys ResetKey)
         {
+            KeyboardState keyboard = Keyboard.GetState();
+            if(keyboard.IsKeyDown(ResetKey))
+            {
+                isReset = true;
+            }
+
             if (position.X < 0)
             {
                 speed.X = Math.Abs(speed.X);
@@ -43,13 +52,13 @@ namespace monoBrickBreaker
             {
                 speed.Y = -Math.Abs(speed.Y);
 
-                float ratio = ((HitBoxPaddle.X + HitBoxPaddle.Width / 2) - (position.X + texture.Width / 2)) / 50;    
+                float ratio = ((position.X + texture.Width / 2) - (HitBoxPaddle.X + HitBoxPaddle.Width / 2)) / (HitBoxPaddle.Width / 2);    
                 if(ratio < 0)
                 {
                     
                 }
 
-                speed.X = ratio * Math.Abs(speed.X);
+                speed.X = ratio * baseXSpeed;//Math.Abs(speed.X);
 
                 if (Math.Abs(speed.X) > 7)
                 {
@@ -59,35 +68,38 @@ namespace monoBrickBreaker
 
             foreach (Brick brick in bricks)
             {
+                bool wasHit = false;
+
                 if (HitBox.Intersects(brick.HitBoxBottom))
                 {
                     speed.Y = Math.Abs(speed.Y);
-                    brick.health--;
-                    break;
+                    wasHit = true;
                     //hasCollided = true;
                 }
-                if (HitBox.Intersects(brick.HitBoxTop))
+                else if (HitBox.Intersects(brick.HitBoxTop))
                 {
                     speed.Y = -Math.Abs(speed.Y);
-                    brick.health--;
-                    break;
-                    //hasCollided = true;
-                }
-                if (HitBox.Intersects(brick.HitBoxLeft))
-                {
-                    speed.X = -Math.Abs(speed.X);
-                    brick.health--;
-                    break;
-                    //hasCollided = true;
-                }
-                if (HitBox.Intersects(brick.HitBoxRight))
-                {
-                    speed.X = Math.Abs(speed.X);
-                    brick.health--;
-                    break;
+                    wasHit = true;
                     //hasCollided = true;
                 }
 
+                if (HitBox.Intersects(brick.HitBoxLeft))
+                {
+                    speed.X = -Math.Abs(speed.X);
+                    wasHit = true;
+                    //hasCollided = true;
+                }
+                else if (HitBox.Intersects(brick.HitBoxRight))
+                {
+                    speed.X = Math.Abs(speed.X);
+                    wasHit = true;
+                    //hasCollided = true;
+                }
+
+                if(wasHit)
+                {
+                    brick.health--;
+                }
 
             }
 
@@ -105,7 +117,18 @@ namespace monoBrickBreaker
                 return false;
             }
         }
-
+        public bool Restart(Keys RestartKey)
+        {
+            KeyboardState keyboard = Keyboard.GetState();
+            if(keyboard.IsKeyDown(RestartKey))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         public void ResetGaneCheck()
         {
             gameOver = false;
@@ -143,5 +166,22 @@ namespace monoBrickBreaker
                 bigBrick.health--;
             }
         }
+        public bool Reset()
+        {
+            if (isReset)
+            {
+                isReset = false;
+                return true;
+                
+
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
+
+
     }
 }
