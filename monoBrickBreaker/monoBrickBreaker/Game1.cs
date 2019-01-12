@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
+using System.Media;
 
 namespace monoBrickBreaker
 {
@@ -19,10 +22,17 @@ namespace monoBrickBreaker
         Texture2D pixel;
         Brick bigBrick;
         int lives = 3;
-
+        SoundEffect hit;
+        SoundEffect lose;
+        SoundEffect gameOver;
+        SoundEffect boing;
+        bool soundPlayOver = false;
+        bool gnomed = true;
         List<Brick> bricks = new List<Brick>();
-       public int numberOfBricks = 10;
+       public int numberOfBricks = 100;
         public int numberOfRows = 0;
+        Video video;
+        VideoPlayer videoPlayer;
 
         public Game1()
         {
@@ -39,9 +49,12 @@ namespace monoBrickBreaker
 
             base.Initialize();
         }
-
+        Texture2D brickTexture;
+        Color brickTint = Color.White;
         protected override void LoadContent()
         {
+            video = Content.Load<Video>("yousuck");
+            videoPlayer = new VideoPlayer();
 
             numberOfRows = numberOfBricks / 10;
 
@@ -58,8 +71,11 @@ namespace monoBrickBreaker
             ball = new Ball(ballPos, ballTexture, ballTint);
             pixel = new Texture2D(GraphicsDevice, 1, 1);
             pixel.SetData<Color>(new Color[] { Color.White });
-           Texture2D brickTexture = Content.Load<Texture2D>("brick");
-            Color brickTint = Color.White;
+            brickTexture = Content.Load<Texture2D>("brick");
+            hit = Content.Load<SoundEffect>("brick_break");
+            lose = Content.Load<SoundEffect>("lose");
+            gameOver = Content.Load<SoundEffect>("gameover");
+            boing = Content.Load<SoundEffect>("boing");
             for (int j = 0; j < numberOfRows; j++)
             {
                 for (int i = 0; i < numberOfBricks; i++)
@@ -89,6 +105,8 @@ namespace monoBrickBreaker
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            
+
             if(bricks.Count == 0)
             {
                 youWin = true;
@@ -115,49 +133,115 @@ namespace monoBrickBreaker
             }
             if (lives >= 0)
             {
-                ball.Update(GraphicsDevice.Viewport, trampoline.HitBox, bricks, numberOfBricks, Keys.Y);
+
+                ball.Update(GraphicsDevice.Viewport, trampoline.HitBox, bricks, numberOfBricks, Keys.Y, hit, boing);
                 trampoline.Update(Keys.S, Keys.F, GraphicsDevice.Viewport, Keys.I, ball.position);
             }
 
             if (ball.gameCheck())
             {
+                soundPlayOver = true;
                 lives--;
+                if (lives >= 1)
+                {
+                    lose.Play();
+                }
+
+
                 ball.position = new Vector2(610, 360);
                 ball.speed.X = 0;
                 ball.speed.Y = 0;
                 ball.ResetGaneCheck();
             }
+            if (lives < 0)
+            {
+
+                if(gnomed)
+                {
+                    videoPlayer.Play(video);
+                }
+                gnomed = false;
+            }
             if (ball.Reset())
             {
                 lives = 3;
+                gnomed = true;
+                ball.position = new Vector2(640, 400);
+                Brick ResetBrick = null;
+                for(int i = 0; i < bricks.Count; i++)
+                {
+                    foreach (Brick brick in bricks)
+                    {
 
-                ball.position = new Vector2(640, 360);
+                        ResetBrick = brick;
+
+                        brick.Update();
+                    }
+
+                    if (toRemove != null)
+                    {
+                        bricks.Remove(ResetBrick);
+                    }
+                }
+
+                for (int j = 0; j < numberOfRows; j++)
+                {
+                    for (int i = 0; i < numberOfBricks; i++)
+                    {
+
+                        Vector2 brickPos = new Vector2((i * 128), 30 * j);
+
+                        bricks.Add(new Brick(brickPos, brickTexture, brickTint, numberOfRows - j));
+                    }
+                }
 
             }
+
+
                 base.Update(gameTime);
             
         }
-
         
         protected override void Draw(GameTime gameTime)
         {
+            Texture2D videoTexture = null;
+
+            if (videoPlayer.State != MediaState.Stopped)
+            {
+                videoTexture = videoPlayer.GetTexture();
+            }
 
             GraphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
+
+            if (videoTexture != null)
+            {
+                spriteBatch.Draw(videoTexture, new Vector2(600, 400), Color.White);
+            }
+
             trampoline.Draw(spriteBatch);
             ball.Draw(spriteBatch);
             if(youWin)
             {
                 spriteBatch.DrawString(font, "GG! You Won! Press R to Restart.", new Vector2(640, 240), Color.Black);
             }
-            if (lives < 1)
+            
+            if (lives == 0)
             {
-                spriteBatch.DrawString(font, "You lose", new Vector2(640, 680), Color.Black);
-                spriteBatch.DrawString(font, "Retry? Press Y. ", new Vector2(640, 630), Color.Black);
+                
+                if(soundPlayOver)
+                {
+                    
+                    gameOver.Play();
+                }
+
+                spriteBatch.DrawString(font, "You lose", new Vector2(640, 600), Color.Black);
+                spriteBatch.DrawString(font, "Retry? Press Y. ", new Vector2(640, 550), Color.Black);
             }
+            soundPlayOver = false;
             ball.StartGame(Keys.Space);
             //  bigBrick.Draw(spriteBatch);
-            spriteBatch.DrawString(font, $"{lives} lives left", new Vector2(320, 680), Color.Black);
+            spriteBatch.DrawString(font, $"{lives} lives left", new Vector2(320, 600), Color.Black);
             foreach (Brick brick in bricks)
             {
                 brick.Draw(spriteBatch);
@@ -169,7 +253,7 @@ namespace monoBrickBreaker
                //fffspriteBatch.Draw(pixel, brick.HitBox, Color.Black);
                 //brick.tint = brick.color;
             }
-            spriteBatch.DrawString(font, "Top Of Hitbox", trampoline.position, Color.Black);
+           //spriteBatch.DrawString(font, "Top Of Hitbox", trampoline.position, Color.Black);
             //spriteBatch.Draw(pixel, trampoline.HitBox, Color.DarkRed);
            // spriteBatch.Draw(pixel, ball.HitBox, Color.Black);
             spriteBatch.End();

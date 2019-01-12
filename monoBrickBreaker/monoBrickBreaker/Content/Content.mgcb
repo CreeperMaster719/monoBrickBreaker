@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin boing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:boing.wav
+
 #begin brick.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -24,6 +30,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:brick.png
+
+#begin brick_break.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:brick_break.wav
 
 #begin brickball.png
 /importer:TextureImporter
@@ -43,6 +55,18 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Font.spritefont
+
+#begin gameover.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:gameover.wav
+
+#begin lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:lose.wav
 
 #begin rectangle.png
 /importer:TextureImporter
@@ -67,4 +91,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Trampoline-PNG.png;trampoline
+
+#begin yousuck.wmv
+/importer:WmvImporter
+/processor:VideoProcessor
+/build:yousuck.wmv
 

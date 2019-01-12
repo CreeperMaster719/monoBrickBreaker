@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,7 +26,7 @@ namespace monoBrickBreaker
         }
         
 
-        public void Update(Viewport viewport, Rectangle HitBoxPaddle, List<Brick> bricks, int numberOfBricks, Keys ResetKey)
+        public void Update(Viewport viewport, Rectangle HitBoxPaddle, List<Brick> bricks, int numberOfBricks, Keys ResetKey, SoundEffect player, SoundEffect effect)
         {
             KeyboardState keyboard = Keyboard.GetState();
             if(keyboard.IsKeyDown(ResetKey))
@@ -50,6 +52,8 @@ namespace monoBrickBreaker
             }
             if (HitBox.Intersects(HitBoxPaddle))
             {
+                effect.Play();
+                
                 speed.Y = -Math.Abs(speed.Y);
 
                 float ratio = ((position.X + texture.Width / 2) - (HitBoxPaddle.X + HitBoxPaddle.Width / 2)) / (HitBoxPaddle.Width / 2);    
@@ -98,6 +102,7 @@ namespace monoBrickBreaker
 
                 if(wasHit)
                 {
+                    player.Play();
                     brick.health--;
                 }
 
